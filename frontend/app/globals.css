@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+/* ─── Design tokens ───────────────────────────────────────────────────────── */
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Semantic palette */
+  --color-background: #FAF8F5;
+  --color-foreground: #111827;
+  --color-muted: #4B5563;
+  
+  --color-surface-base: #FAF8F5;
+  --color-surface-card: #FFFFFF;
+  --color-surface-soft: #F0F4FF;
+  
+  --color-border-default: #E5E7EB;
+  --color-border-subtle: #FAF8F5;
+  
+  --color-brand-primary: #4F46E5;
+  --color-brand-hover: #3730A3;
+  
+  --color-signal-success: #16A34A;
+  --color-signal-warning: #D97706;
+  --color-signal-danger: #DC2626;
+
+  /* Keep legacy variables mapped to avoid breakage */
+  --color-brand-violet: #4F46E5;
+  --color-brand-indigo: #3730A3;
+  --color-brand-violet-muted: rgba(79, 70, 229, 0.1);
+}
+
+/* ─── Base ────────────────────────────────────────────────────────────────── */
+:root {
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #FAF8F5;
+  color: #111827;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Focus ring ──────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid rgba(79, 70, 229, 0.6);
+  outline-offset: 2px;
+}
+
+/* ─── Selection ───────────────────────────────────────────────────────────── */
+::selection {
+  background-color: rgba(79, 70, 229, 0.2);
+  color: #111827;
+}
+
+/* ─── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(17, 24, 39, 0.1);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(17, 24, 39, 0.2);
+}

@@ -1,0 +1,69 @@
+# ─── Secrets — NEVER commit ──────────────────────────────────────
+.env
+.env.*
+!.env.example
+!.env.local.example
+*.pem
+
+# ─── Node.js ──────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ─── Next.js ──────────────────────────────────────────────────────
+frontend/.next/
+frontend/out/
+frontend/dist/
+frontend/.vercel
+frontend/next-env.d.ts
+
+# ─── Python ───────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+*.whl
+.eggs/
+.mypy_cache/
+.ruff_cache/
+
+# ─── uv / virtual envs ───────────────────────────────────────────
+.venv/
+venv/
+env/
+.uv/
+
+# ─── Pytest ──────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ─── IDE ─────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ─── OS ──────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── Docker ──────────────────────────────────────────────────────
+*.env.docker
+
+# ─── Misc ────────────────────────────────────────────────────────
+*.log
+*.tmp
+.turbo/
+*.tsbuildinfo
+
