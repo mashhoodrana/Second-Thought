@@ -36,10 +36,9 @@ services:
       - key: GEMINI_ANALYSIS_MODEL
         value: gemini-2.5-flash
 
-      # CORS_ORIGINS: add your Vercel frontend URL here after frontend deployment.
-      # For now set to a placeholder — update after Vercel deployment.
+      # CORS_ORIGINS: comma-separated list of allowed frontend origins
       - key: CORS_ORIGINS
-        value: http://localhost:3000
+        value: https://second-thought-theta.vercel.app,http://localhost:3000
 
       # ── Secrets — enter values manually in Render dashboard ──────────
       # These are intentionally left without values. Render will prompt
