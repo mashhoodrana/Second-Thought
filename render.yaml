@@ -1,0 +1,57 @@
+# render.yaml — Second Thought Render Blueprint
+# https://render.com/docs/blueprint-spec
+#
+# Deploy this service by connecting the GitHub repo in the Render dashboard.
+# Render will auto-read this file and pre-fill all settings.
+# Secret values (marked sync: false) must be entered manually in Render dashboard.
+
+services:
+  - type: web
+    name: second-thought-backend
+    runtime: python
+    region: singapore          # Closest to South/Southeast Asia
+    rootDir: backend
+    plan: free                 # Upgrade to starter for always-on
+
+    buildCommand: pip install uv && uv sync --frozen
+    startCommand: uv run uvicorn app.main:app --host 0.0.0.0 --port $PORT
+
+    healthCheckPath: /health
+
+    # Auto-deploy on every push to main
+    autoDeploy: true
+    branch: main
+
+    envVars:
+      # ── Public configuration (safe to keep in blueprint) ─────────────
+      - key: APP_ENV
+        value: production
+
+      - key: PYTHON_VERSION
+        value: "3.12"
+
+      - key: GEMINI_DEFAULT_MODEL
+        value: gemini-2.5-flash
+
+      - key: GEMINI_ANALYSIS_MODEL
+        value: gemini-2.5-flash
+
+      # CORS_ORIGINS: add your Vercel frontend URL here after frontend deployment.
+      # For now set to a placeholder — update after Vercel deployment.
+      - key: CORS_ORIGINS
+        value: http://localhost:3000
+
+      # ── Secrets — enter values manually in Render dashboard ──────────
+      # These are intentionally left without values. Render will prompt
+      # you to fill them in before the first deploy.
+      - key: SUPABASE_URL
+        sync: false
+
+      - key: SUPABASE_ANON_KEY
+        sync: false
+
+      - key: GEMINI_API_KEY
+        sync: false
+
+      - key: SEARCH_API_KEY
+        sync: false
