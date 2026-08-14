@@ -60,6 +60,20 @@ export function Sidebar({ user }: SidebarProps) {
     fetchHistory();
   }, [pathname]);
 
+  // Automatically poll history if any session is in pending or processing status
+  useEffect(() => {
+    const isProcessingAny = history.some(
+      (item) => item.status === "processing" || item.status === "pending"
+    );
+    if (!isProcessingAny) return;
+
+    const interval = setInterval(() => {
+      listInvestigations().then((res) => setHistory(res)).catch(() => {});
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [history]);
+
   // Restore collapse state
   useEffect(() => {
     try {

@@ -398,9 +398,41 @@ export function ResultContainer({ data, thinkingData, onRetry }: ResultContainer
       <div className="space-y-2">
         <span className="text-[13px] font-bold uppercase tracking-wider text-muted">Claim Under Examination</span>
         <div className="rounded-2xl border border-border-default bg-surface-card p-6 shadow-sm">
-          <blockquote className="text-[16px] md:text-[17px] font-serif italic border-l-3 border-brand-primary pl-4 text-foreground leading-relaxed">
-            "{data.input?.raw_text}"
-          </blockquote>
+          {(() => {
+            const raw = data.input?.raw_text || "";
+            let displayText = raw;
+            let hasImage = false;
+
+            if (raw.includes("|||")) {
+              const [textPart, imgPart] = raw.split("|||", 2);
+              displayText = textPart.trim();
+              if (imgPart && imgPart.trim().startsWith("data:image/")) {
+                hasImage = true;
+              }
+            } else if (raw.startsWith("data:image/")) {
+              displayText = data.input?.sanitized_text || "Attached Image Claim";
+              hasImage = true;
+            }
+
+            if (!displayText && hasImage) {
+              displayText = "Attached Image Claim";
+            }
+
+            return (
+              <>
+                <blockquote className="text-[16px] md:text-[17px] font-serif italic border-l-3 border-brand-primary pl-4 text-foreground leading-relaxed">
+                  "{displayText}"
+                </blockquote>
+                {hasImage && (
+                  <div className="mt-3 pl-4 flex items-center gap-1.5">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-brand-primary/10 border border-brand-primary/20 text-[11px] font-bold text-brand-primary">
+                      📷 Attached Image Analyzed
+                    </span>
+                  </div>
+                )}
+              </>
+            );
+          })()}
         </div>
       </div>
 
