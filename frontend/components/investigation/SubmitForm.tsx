@@ -38,7 +38,42 @@ export function SubmitForm() {
   const charCount = rawText.length;
   const isFormEmpty = !rawText.trim() && !imagePreview;
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const compressImage = (file: File, maxDimension = 1600, quality = 0.85): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        let { width, height } = img;
+        if (width > maxDimension || height > maxDimension) {
+          if (width > height) {
+            height = Math.round((height * maxDimension) / width);
+            width = maxDimension;
+          } else {
+            width = Math.round((width * maxDimension) / height);
+            height = maxDimension;
+          }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          reject(new Error("Canvas context unavailable"));
+          return;
+        }
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error("Failed to process image"));
+      };
+      img.src = url;
+    });
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setImageError(null);
     setServerError(null);
     const file = e.target.files?.[0];
@@ -49,16 +84,22 @@ export function SubmitForm() {
       return;
     }
 
-    if (file.size > 8 * 1024 * 1024) {
-      setImageError("Image size must not exceed 8MB");
+    if (file.size > 12 * 1024 * 1024) {
+      setImageError("Image size must not exceed 12MB");
       return;
     }
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result as string);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const compressedDataUrl = await compressImage(file);
+      setImagePreview(compressedDataUrl);
+    } catch {
+      // Fallback to standard FileReader if canvas processing fails
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleClearImage = () => {
@@ -68,7 +109,7 @@ export function SubmitForm() {
 
   const onSubmit = async (values: SubmitFormValues) => {
     setServerError(null);
-    const typedText = values.raw_text.trim();
+    const typedText = (values.raw_text || "").trim();
 
     if (!typedText && !imagePreview) {
       setServerError("Please enter some text or upload an image to investigate.");
@@ -102,6 +143,8 @@ export function SubmitForm() {
         } else {
           setServerError(err.message);
         }
+      } else if (err instanceof Error) {
+        setServerError(err.message);
       } else {
         setServerError("Something went wrong. Please try again.");
       }

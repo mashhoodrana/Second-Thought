@@ -44,10 +44,19 @@ async function apiFetch<T>(
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...options,
-    headers,
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}${path}`, {
+      ...options,
+      headers,
+    });
+  } catch (err: any) {
+    const errorMsg = err?.message || "Failed to fetch";
+    throw new ApiError(
+      0,
+      `Network Connection Error (${errorMsg}). Unable to reach backend at '${API_BASE_URL}'. Please verify NEXT_PUBLIC_API_BASE_URL environment variable and backend CORS configuration.`
+    );
+  }
 
   if (!response.ok) {
     let detail = `HTTP ${response.status}`;
